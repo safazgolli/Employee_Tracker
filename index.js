@@ -10,7 +10,7 @@ const db = mysql.createConnection(
     // MySQL username,
     user: 'root',
     //  Add MySQL password here
-    password: 'Pro0fpoint',
+    password: '',
     database: 'employee_db'
   },
   console.log(`Connected to the employee_db database.`)
@@ -128,18 +128,20 @@ const manager = async () => {
     result.push({name: 'No Manager Available', value: null});
     return result;
 } 
-const listemployee = async () => {
-    const sql = `SELECT	employee.id,
-        CONCAT(employee.first_name, " ", employee.last_name) AS employees
-    FROM employee;`;
+const listEmployee = async () => {
+   
+    const sql = `SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS employees FROM employee;`;
     const query = await db.promise().query(sql);
-    let result = query[0].map(({id, emplyees}) => ({
+
+    let result = query[0].map(({id,emplyees}) => ({
         name: `${emplyees}`,
         value: id
     }));
+   
     return result;
+    
 }
- 
+
 function addRole() {
     inquirer
     .prompt([
@@ -194,7 +196,7 @@ function addEmployee() {
         {
             type: 'list',
             name: 'mngr',
-            message: "who is his manager?",
+            message: "who is his/her manager?",
             choices: async function list() {return manager();}
         }
         
@@ -205,7 +207,7 @@ function addEmployee() {
         const param = [response.newName, response.newLastName, response.Rl, response.mngr];   
         db.query(sql, param, (err, result) => {
             if (err) { console.log(err); }  
-        else {console.log("New employe was added"); 
+        else {console.log("New employee was added"); 
         employeeTraker(); 
     }
 });
@@ -218,12 +220,12 @@ function updateEmployeeRole() {
             type: 'list',
             name: 'nameEpl',
             message: "choose a name from the list?",
-            choices: async function list() {return listemployee();}
+            choices: async function list() {return listEmployee();}
         },
         {
             type: 'list',
             name: 'nRl',
-            message: "What is his new rol?",
+            message: "What is his/her new role?",
             choices: async function list() {return listRole();}
         },
         

@@ -1,5 +1,7 @@
 const inquirer = require('inquirer');
+//mysql library 
 const mysql = require('mysql2');
+//library for creating table
 const cTable = require('console.table');
 
 
@@ -17,8 +19,9 @@ const db = mysql.createConnection(
 
 );
 
-
+// main function
 function employeeTraker() {
+    // prompt list of tod choices
     inquirer.prompt([
 
          {
@@ -36,6 +39,7 @@ function employeeTraker() {
             name: "Todo"
         }]
         )
+        //executing the function of ecach case 
         .then((response) =>{
             switch(response.Todo){
                 case "View all departments": viewDepartments(); break;
@@ -51,7 +55,7 @@ function employeeTraker() {
 }
 
 employeeTraker()
-
+// function provide user with all departments
 function viewDepartments() {
     const sql = `SELECT * FROM department`;
     db.query(sql, (err, row) => {
@@ -59,7 +63,7 @@ function viewDepartments() {
         else { console.log(`\n`); console.table(row); employeeTraker();}
 });
 }
-
+// function to provide user with all roles u
 function viewRole() {
     const sql = `SELECT * FROM role`;
     db.query(sql, (err, row) => {
@@ -67,7 +71,7 @@ function viewRole() {
         else { console.log(`\n`); console.table(row); employeeTraker(); }
 });
 } 
-
+// function to provide user with all employess
 function viewEmployee() {
     const sql = `SELECT * FROM employee`;
     db.query(sql, (err, row) => {
@@ -77,6 +81,7 @@ function viewEmployee() {
     }
 });
 } 
+// fuction to add new department
 function addDepartment() {
     inquirer.prompt(
     {
@@ -94,6 +99,7 @@ function addDepartment() {
 });
 } 
 )}
+// creation a list of department using query that select all from department table
 const listDep = async () => {
     const sql = `SELECT * FROM department;`;
     const query = await db.promise().query(sql);
@@ -104,6 +110,7 @@ const listDep = async () => {
     }));
     return result;
 }
+//creation a list of Roles using query that select all from role table
 const listRole = async () => {
     const sql = `SELECT * FROM role;`;
     const query = await db.promise().query(sql);
@@ -114,6 +121,7 @@ const listRole = async () => {
     }));
     return result;
 }
+// function to add a manager to an  employee
 const manager = async () => {
     const sql = `SELECT	employee.id,
         CONCAT(employee.first_name, " ", employee.last_name) AS manager
@@ -128,19 +136,22 @@ const manager = async () => {
     result.push({name: 'No Manager Available', value: null});
     return result;
 } 
+
+//list of Employee
 const listEmployee = async () => {
-   
     const sql = `SELECT employee.id, CONCAT(employee.first_name, " ", employee.last_name) AS employees FROM employee;`;
     const query = await db.promise().query(sql);
 
-    let result = query[0].map(({id,emplyees}) => ({
-        name: `${emplyees}`,
+    let result = query[0].map(({id,employees}) => ({
+        name: `${employees}`,
         value: id
     }));
    
     return result;
     
 }
+
+//add role to the role table
 
 function addRole() {
     inquirer
@@ -174,6 +185,7 @@ function addRole() {
 });
 } 
 )}
+// add employee to a  employee table
 function addEmployee() {
     inquirer
     .prompt([
@@ -213,6 +225,8 @@ function addEmployee() {
 });
 } 
 )}
+
+//update an employee role
 function updateEmployeeRole() {
     inquirer
     .prompt([
